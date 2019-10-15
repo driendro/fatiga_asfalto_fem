@@ -12,7 +12,10 @@ e_geo=0.1 # Espesor del geosintetico
 h_base = 2.0  # alto base de hormigon
 e=0.5 # espesor de la ranura
 
-res=1.0 # tamaño de los elementos
+
+
+resmax=1.0 # tamaño de los elementos
+resmin=0.1 
 
 nombre_archivo = 'calc/modelo' # PATH/AL/ARCHIVO
 
@@ -35,33 +38,33 @@ z3=z2+h_prob
 
 # Puntos de la Geometria
 # Fondo
-p1= geo.add_point([x0,y0,z0], res)
-p2= geo.add_point([x0,y1,z0], res)
-p3= geo.add_point([x1,y0,z0], res)
-p4= geo.add_point([x1,y1,z0], res)
-p5= geo.add_point([x2,y0,z0], res)
-p6= geo.add_point([x2,y1,z0], res)
-p7= geo.add_point([x3,y0,z0], res)
-p8= geo.add_point([x3,y1,z0], res)
+p1= geo.add_point([x0,y0,z0], resmax)
+p2= geo.add_point([x0,y1,z0], resmax)
+p3= geo.add_point([x1,y0,z0], resmax)
+p4= geo.add_point([x1,y1,z0], resmax)
+p5= geo.add_point([x2,y0,z0], resmax)
+p6= geo.add_point([x2,y1,z0], resmax)
+p7= geo.add_point([x3,y0,z0], resmax)
+p8= geo.add_point([x3,y1,z0], resmax)
 # Geosintetico y hormigon
-p101= geo.add_point([x0,y0,z1], res)
-p102= geo.add_point([x0,y1,z1], res)
-p103= geo.add_point([x1,y0,z1], res)
-p104= geo.add_point([x1,y1,z1], res)
-p105= geo.add_point([x2,y0,z1], res)
-p106= geo.add_point([x2,y1,z1], res)
-p107= geo.add_point([x3,y0,z1], res)
-p108= geo.add_point([x3,y1,z1], res)
+p101= geo.add_point([x0,y0,z1], resmax)
+p102= geo.add_point([x0,y1,z1], resmax)
+p103= geo.add_point([x1,y0,z1], resmax)
+p104= geo.add_point([x1,y1,z1], resmax)
+p105= geo.add_point([x2,y0,z1], resmax)
+p106= geo.add_point([x2,y1,z1], resmax)
+p107= geo.add_point([x3,y0,z1], resmax)
+p108= geo.add_point([x3,y1,z1], resmax)
 # Geosintetico y Asfalto
-p201= geo.add_point([x0,y0,z2], res)
-p202= geo.add_point([x0,y1,z2], res)
-p207= geo.add_point([x3,y0,z2], res)
-p208= geo.add_point([x3,y1,z2], res)
+p201= geo.add_point([x0,y0,z2], resmax)
+p202= geo.add_point([x0,y1,z2], resmax)
+p207= geo.add_point([x3,y0,z2], resmax)
+p208= geo.add_point([x3,y1,z2], resmax)
 # Asfalto superior
-p301= geo.add_point([x0,y0,z3], res)
-p302= geo.add_point([x0,y1,z3], res)
-p307= geo.add_point([x3,y0,z3], res)
-p308= geo.add_point([x3,y1,z3], res)
+p301= geo.add_point([x0,y0,z3], resmax)
+p302= geo.add_point([x0,y1,z3], resmax)
+p307= geo.add_point([x3,y0,z3], resmax)
+p308= geo.add_point([x3,y1,z3], resmax)
 
 # Lineas que conforman la geometria
 # Lineas Horizontales de la cara frontal
@@ -224,12 +227,12 @@ a=open('%s.geo' %(nombre_archivo), 'w')
 a.write(geo.get_code())
 a.close()
 
-# Mashado
-mesh = pg.generate_mesh(geo)
-
-meshio.write('%s.xml' %(nombre_archivo), mesh)
-meshio.write('%s.vtk' %(nombre_archivo), mesh)
+# Realizar el mashado y el archivo xml
+s= 'gmsh -3  %s.geo -format msh2' %(nombre_archivo)
+os.system(s)
+s= 'dolfin-convert %s.msh %s.xml' %(nombre_archivo, nombre_archivo)
+os.system(s)
 
 # Mostrar el resultado en gmsh
-com = 'gmsh %s.vtk' %(nombre_archivo) 
-os.system(com)
+s = 'gmsh %s.msh' %(nombre_archivo) 
+os.system(s)
