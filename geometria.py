@@ -10,7 +10,7 @@ l, h_prob, b = 30.0, 5.0, 10.0  # largo, alto, ancho del asfalto
 e_geo = 0.4 # Espesor del geosintetico
 h_base = 2.0  # alto base de hormigon
 e = 0.5 # espesor de la ranura
-d = 1 # ancho de la zonad de detalle
+d = 3 # ancho de la zonad de detalle
 
 resmax=1.0 # tamaño de los elementos de los extremos
 resmin=0.5 # tamaño de los elementos del centro
@@ -311,14 +311,14 @@ spa=geo.add_surface_loop([spaind, spainm, spaini,
 vpa=geo.add_volume(spa)
 
 # Superficies Fisicas
-geo.add_physical_surface(shmin, label="supBaseMovil")
-geo.add_physical_surface(shfin, label="supBaseFija")
+geo.add_physical(shmin, label=1)
+geo.add_physical(shfin, label=2)
 
 # Volumenes Fisicos
-geo.add_physical_volume(vbhm, label="volBaseMovil")
-geo.add_physical_volume(vbhf, label="volBaseFija")
-geo.add_physical_volume(vgs, label="volGeosintetico")
-geo.add_physical_volume(vpa, label="volProbetaAsfalto")
+geo.add_physical(vbhm, label=3)
+geo.add_physical(vbhf, label=4)
+geo.add_physical(vgs, label=5)
+geo.add_physical(vpa, label=6)
 
 # Escribimos el archivo .geo
 a=open('%s.geo' %(nombre_archivo), 'w')
@@ -332,5 +332,5 @@ s= 'dolfin-convert %s.msh %s.xml' %(nombre_archivo, nombre_archivo)
 os.system(s)
 
 # Mostrar el resultado en gmsh
-s = 'gmsh %s.msh' %(nombre_archivo) 
-os.system(s)
+#s = 'gmsh %s.msh' %(nombre_archivo) 
+#os.system(s)
