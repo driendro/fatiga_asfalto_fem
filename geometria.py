@@ -5,7 +5,7 @@ import meshio
 import pygmsh as pg
 import os
 
-def parametrosProbeta(x, malla=False, geometria=False, *args, **kwargs):
+def probeta(x, malla=False, geometria=False, *args, **kwargs):
     
 	l, h_prob, b = x[0], x[1], x[2]  # largo, alto, ancho del asfalto
 	e_geo = x[3] # Espesor del geosintetico

@@ -19,7 +19,7 @@ parametros=[l, h_prob, b, e_geo, h_base, e, d, resmax, resmin, archivo]
 # Mostrar mallado
 malla=False
 # Mostrar geometria
-geometria=True
+geometria=False
 
 # Guardamos los parametros del mallado en un archivo llamado "parametros"
 # pero antes de guardar los nuevos parametros, copiamos el archivo original
@@ -43,6 +43,7 @@ a = open('calc/parametros.old', 'r')
 file2=a.read()
 a.close()
 
+# comparamos la configuracion actual con la anterior, si son iguales no recalcula
 if file1==file2:
 	print('parametros anteriores = %s' %(file2))
 	print('parametros actuales   = %s' %(file1))
@@ -52,7 +53,7 @@ else:
 	print('parametros actuales   = %s' %(file1))
 	print('Se regenerla la malla')
 	# llamo a la funcion para regenerar el calculo del mashado completo
-	g.parametrosProbeta(parametros, malla, geometria)
+	g.probeta(parametros, malla, geometria)
 
 # Obtenemos la malla creada en el archivo geometria.py
 mesh = fnc.Mesh("%s.xml" %(archivo)) # mesh
@@ -67,25 +68,43 @@ bhf= fnc.DirichletBC(V, fnc.Constant(5.0), bordes, 1)
 bhm= fnc.DirichletBC(V, fnc.Constant(0.0), bordes, 2)
 bc=[bhf, bhm]
 
-# Defino los Volumenes
+# Defino las propiedades de los materiales
+# Homigon
+E_h= 200000 #MPA
+nu_h = 1
+lamda_h = 1
+# Geosintetico
+E_g= 200000 #MPA
+nu_g = 1
+lamda_g = 1
+# Asfalto
+E_a= 200000 #MPA
+nu_a = 1
+lamda_a = 1
 
-class PropiedadesMaterial(fnc.UserExpression):  # Ahora anda con python3, hay que usar UserExpression
-    def __init__(self, subdomains, E, nu, **kwargs):
-        super().__init__(**kwargs)  # Ahora anda con python3
-        self.subdomains = subdomains
-        self.E = E
-        self.nu = nu
+# metemos todo en una array
+E=[E_h, E_g, E_a]
+nu=[nu_h, nu_g, nu_a]
+lamda=[lamda_h, lamda_g, lamda_a]
 
-    def eval_cell(self, values, cell):
-        # Fijo
-        if self.subdomains[cell.index] == 3:
-            values[0] = self.E[0]
-        # Movil
-        elif self.subdomains[cell.idex] == 4:
-            values[1] = self.E[0]
-        # Geosintetico
-        elif self.subdomains[cell.idex] == 5:
-            values[2] = self.E[1]
-        # Asafaltos
-        else:
-            values[3] = self.E[2]
+class Material(fnc.UserExpression):
+	def __init__(self, subdominio, E, nu, lamda, **kwargs):
+		super().__init__(**kwargs)
+		self.subdominio = subdominio
+		self.E = E
+		self.nu = nu
+		self.lamda = lamda
+
+	def eval_cell(self, values, cell):
+		# Fijo
+		if self.subdominio[cell.index] == 3:
+			values[0] = self.E[0]
+		# Movil
+		elif self.subdominio[cell.idex] == 4:
+			values[1] = self.E[0]
+		# Geosintetico
+		elif self.subdominio[cell.idex] == 5:
+			values[2] = self.E[1]
+		# Asafaltos
+		else:
+			values[3] = self.E[2]
