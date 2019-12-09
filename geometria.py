@@ -312,11 +312,16 @@ def probeta(x, malla=False, geometria=False, *args, **kwargs):
 	vpa=geo.add_volume(spa)
 
 	# Superficies Fisicas
-	#geo.add_physical(shmin, label=1)
-	#geo.add_physical(shfin, label=2)
+	geo.add_physical(shmin, label=1)
+	geo.add_physical(shfin, label=2)
 
-	geo.add_physical(shmd, label=1)
-	geo.add_physical(shfd,label=2)
+	# geo.add_physical(shmd, label=1)
+	# geo.add_physical(shfd,label=2)
+	# geo.add_physical(sgsd, label=7)
+	# geo.add_physical(spad, label=8)
+
+	# geo.add_physical(sgsiz, label=9)
+	# geo.add_physical(spaiz, label=10)
 
 	# Volumenes Fisicos
 	geo.add_physical(vbhm, label=3)
@@ -324,11 +329,6 @@ def probeta(x, malla=False, geometria=False, *args, **kwargs):
 	geo.add_physical(vgs, label=5)
 	geo.add_physical(vpa, label=6)
 
-	geo.add_physical(sgsd, label=7)
-	geo.add_physical(spad, label=8)
-
-	geo.add_physical(sgsiz, label=9)
-	geo.add_physical(spaiz, label=10)
 
 	# Escribimos el archivo .geo
 	a=open('%s.geo' %(nombre_archivo), 'w')

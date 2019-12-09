@@ -204,14 +204,14 @@ fnc.dx=fnc.dx(metadata={'quadrature_degree': 3})
 #Condición de borde del costado izquierdo
 zero = fnc.Constant((0.0, 0.0, 0.0))
 bc1 = fnc.DirichletBC(V, zero, bordes, 1)
-bc2 = fnc.DirichletBC(V, zero, bordes, 9)
-bc3 = fnc.DirichletBC(V, zero, bordes, 10)
-bc  = [bc1, bc2, bc3]
+#bc2 = fnc.DirichletBC(V, zero, bordes, 9)
+#bc3 = fnc.DirichletBC(V, zero, bordes, 10)
+bc  = [bc1, bc1, bc1]
 
 def eps(v):
     return fnc.sym(fnc.grad(v))
 
-# Tensor de tnesiones
+# Tensor de tensiones
 def sigma(r):
     return 2.0*mu*fnc.sym(fnc.grad(r)) + lmbda*fnc.tr(fnc.sym(fnc.grad(r)))*fnc.Identity(len(r))
 
@@ -229,7 +229,7 @@ def c(u, w):
 
 #Trabajo de fuerzas externas
 def Wext(w):
-    return fnc.dot(w, p)*dss(7) + fnc.dot(w, p)*dss(8)# + fnc.dot(w, p)*dss(8)
+    return fnc.dot(w, p)*dss(2)# + fnc.dot(w, p)*dss(8) + fnc.dot(w, p)*dss(1)
 
 #Actualiza la aceleración
 # a = 1/(2*beta)*((u - u0 - v0*dt)/(0.5*dt*dt) - (1-2*beta)*a0)
