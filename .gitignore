@@ -1,3 +1,9 @@
-calc/*
+calc/vtu/*
+*.xml
+*.msh
+*.h5
+parametros
+parametros.old
+*.xdmf
 __pycache__
 *.code-workspace
