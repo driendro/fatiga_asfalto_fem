@@ -1,0 +1,55 @@
+Vtu1
+p0=100.0
+p = fnc.Expression(("p0*(sin(t))*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
+# Defino las propiedades de los materiales
+# Homigon
+E_h = 20.0
+nu_h = 0.2
+rho_h = 0.0
+# Geosintetico
+E_g= 2000.0 
+nu_g = 0.1
+rho_g = 0.0
+# Asfalto
+E_a= 1.0 #MPa
+nu_a = 0.35
+rho_a = 0.0
+
+Vtu3
+# Carga aplicada
+p0 = 100. # kilos de MPa
+p = fnc.Expression(("p0*(sin(t))*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
+
+# Defino las propiedades de los materiales
+# Homigon
+E_h = 20.0
+nu_h = 0.2
+rho_h = 0.0
+# Geosintetico
+E_g= 20.0 
+nu_g = 0.1
+rho_g = 0.0
+# Asfalto
+E_a= 1.0 #MPa
+nu_a = 0.35
+rho_a = 0.0
+
+Vtu2
+# Carga aplicada
+p0 = 100. # kilos de MPa
+
+p = fnc.Expression(("p0*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
+
+# Defino las propiedades de los materiales
+# Homigon
+E_h = 20.0
+nu_h = 0.2
+rho_h = 0.0
+# Geosintetico
+E_g= 20.0 
+nu_g = 0.1
+rho_g = 0.0
+# Asfalto
+E_a= 1.0 #MPa
+nu_a = 0.35
+rho_a = 0.0

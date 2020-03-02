@@ -14,11 +14,11 @@ h_base = 2.0  					# alto base de hormigon
 e = 0.5 						# espesor de la ranura
 d = 1.0 						# ancho de la zonad de detalle
 
-resmax=0.8						# tamaño de los elementos de los extremos
-resmin=0.5						# tamaño de los elementos del centro
+resmax=0.6						# tamaño de los elementos de los extremos
+resmin=0.3						# tamaño de los elementos del centro
 
 archivo = 'calc/modelo'			# PATH/AL/ARCHIVO
-archivovtu = 'calc/vtu/modelo'	# PATH/A/LOS/ARCHIVOS/VTU
+archivovtu = 'calc/vtu1/modelo'	# PATH/A/LOS/ARCHIVOS/VTU
 
 # No tocar esta lista
 parametros=[l, h_prob, b, e_geo, h_base, e, d, resmax, resmin, archivo]
@@ -129,28 +129,30 @@ class Rho(fnc.UserExpression):
 			values[0]=self.rho[2]
 
 # Parámetros de tiempo
-T      = 2.0
-Nsteps = 10
+T      = 10.0
+Nsteps = 20
 dt     = fnc.Constant(T/Nsteps)
 
 # Carga aplicada
-p0 = 1000.
-#cutoff_Tc = T/4
-#p = fnc.Expression(("t <= tc ? p0*t/tc : p0", "0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
-cutoff_Tc = T
+p0 = 10. # kilos de MPa
+cutoff_Tc = T/2
 p = fnc.Expression(("t <= tc ? p0*t/tc : p0", "0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
+
+#p = fnc.Expression(("p0*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
+
+#(sin(tc))*(sin(tc))
 
 # Defino las propiedades de los materiales
 # Homigon
-E_h= 1.0 
+E_h = 20.0
 nu_h = 0.2
 rho_h = 0.0
 # Geosintetico
-E_g= 1.0 
+E_g= 20.0 
 nu_g = 0.2
 rho_g = 0.0
 # Asfalto
-E_a= 1.0 
+E_a= 20.0 #MPa
 nu_a = 0.2
 rho_a = 0.0
 
@@ -203,10 +205,10 @@ fnc.dx=fnc.dx(metadata={'quadrature_degree': 3})
 
 #Condición de borde del costado izquierdo
 zero = fnc.Constant((0.0, 0.0, 0.0))
-bc1 = fnc.DirichletBC(V, zero, bordes, 1)
+bc = fnc.DirichletBC(V, zero, bordes, 1)
 #bc2 = fnc.DirichletBC(V, zero, bordes, 9)
 #bc3 = fnc.DirichletBC(V, zero, bordes, 10)
-bc  = [bc1, bc1, bc1]
+#bc  = [bc1, bc1, bc1]
 
 def eps(v):
     return fnc.sym(fnc.grad(v))
@@ -341,9 +343,9 @@ for (i, dt) in enumerate(np.diff(time)):
 
     # Solve for new displacement
     res = fnc.assemble(L_form)
-    bc[0].apply(res)
-    bc[1].apply(res)
-    bc[2].apply(res)
+    bc.apply(res)
+    #bc[1].apply(res)
+    #bc[2].apply(res)
     solver.solve(K, u.vector(), res)
 
     # Update old fields with new quantities
