@@ -8,17 +8,17 @@ import os
 import matplotlib.pyplot as plt
 
 # Dimensiones en cm
-l, h_prob, b = 30.0, 5.0, 10.0	# largo, alto, ancho del asfalto
-e_geo = 0.4 					# Espesor del geosintetico
-h_base = 2.0  					# alto base de hormigon
-e = 0.5 						# espesor de la ranura
-d = 1.0 						# ancho de la zonad de detalle
+l, h_prob, b = 30.0, 5.0, 10.0		# largo, alto, ancho del asfalto
+e_geo = 0.4 						# Espesor del geosintetico
+h_base = 2.0  						# alto base de hormigon
+e = 0.5 							# espesor de la ranura
+d = 0.2 							# ancho de la zonad de detalle
 
-resmax=0.6						# tamaño de los elementos de los extremos
-resmin=0.3						# tamaño de los elementos del centro
+resmax=0.6							# tamaño de los elementos de los extremos
+resmin=0.3							# tamaño de los elementos del centro
 
-archivo = 'calc/modelo'			# PATH/AL/ARCHIVO
-archivovtu = 'calc/vtu1/modelo'	# PATH/A/LOS/ARCHIVOS/VTU
+archivo = 'calc/simualcion1/modelo'		# PATH/AL/ARCHIVO
+archivovtu = archivo + '/vtu/modelo'		# PATH/A/LOS/ARCHIVOS/VTU
 
 # No tocar esta lista
 parametros=[l, h_prob, b, e_geo, h_base, e, d, resmax, resmin, archivo]
@@ -54,11 +54,11 @@ a.close()
 if file1==file2:
 	print('parametros anteriores = %s' %(file2))
 	print('parametros actuales   = %s' %(file1))
-	print('Al ser iguales no se regenerla la malla')
+	print('Al ser iguales no se regeneral la malla')
 else:
 	print('parametros anteriores = %s' %(file2))
 	print('parametros actuales   = %s' %(file1))
-	print('Se regenerla la malla')
+	print('Se regeneral la malla')
 	# llamo a la funcion para regenerar el calculo del mashado completo
 	g.probeta(parametros, malla, geometria)
 
@@ -136,7 +136,7 @@ dt     = fnc.Constant(T/Nsteps)
 # Carga aplicada
 p0 = 10. # kilos de MPa
 cutoff_Tc = T/2
-p = fnc.Expression(("t <= tc ? p0*t/tc : p0", "0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
+p = fnc.Expression(("t <= tc ? -p0*t/tc : -p0", "0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
 
 #p = fnc.Expression(("p0*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
 
@@ -148,8 +148,8 @@ E_h = 20.0
 nu_h = 0.2
 rho_h = 0.0
 # Geosintetico
-E_g= 20.0 
-nu_g = 0.2
+E_g= 40.0 
+nu_g = 0.4
 rho_g = 0.0
 # Asfalto
 E_a= 20.0 #MPa
@@ -308,7 +308,7 @@ xdmf_file = fnc.XDMFFile("%s.xdmf" %(archivo))
 xdmf_file.parameters["flush_output"] = True
 xdmf_file.parameters["functions_share_mesh"] = True
 xdmf_file.parameters["rewrite_function_mesh"] = False
-ofile = fnc.File("%s.pvd" %(archivovtu))
+
 
 
 # The time loop is now started, the loading is first evaluated at :math:`t=t_{n+1-\alpha_f}`. The
@@ -358,8 +358,6 @@ for (i, dt) in enumerate(np.diff(time)):
     local_project(sigma(u), Vsig, sig)
     xdmf_file.write(sig, t)
     
-    ofile << sig, t
-
     p.t = t
     #Calculo de energias
     if fnc.MPI.comm_world.size == 1:
