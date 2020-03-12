@@ -4,7 +4,6 @@
 \usepackage{setspace}
 \usepackage{graphicx}
 \usepackage{subfigure}
-\usepackage{lipsum}
 \usepackage{wrapfig}
 \usepackage{parskip}
 \usepackage{multicol}
@@ -21,30 +20,41 @@
 \selectlanguage{spanish}
 
 \begin{document}
- 
- 
+
 \title{ Medición con Elementos Finitos \\ “Ensayo de fatiga de Asfalto” }
 \author{PAPPALARDO, Leonardo \\ RONCONI, Jorge E.}
  
 \maketitle
 
-\section{Introduccion}
-		
-En el siguiente informe se muestra una reproduccion del trabajo "Life cycle analysis of pavement overlays made with Engineered Cementitious Composites", publicado en el año 2013, por Qian, Li, Zhang, Keoleian,  donde analizan la la vida util de la rehabilitacion de caminos de hormigon con asfalto.
+\section{Introducción}
 
-Para esto, se desarrolo un modelo por el Metodo de los Elementos Finitos, en el cual se ensayo a traccion una "probeta de asfalto", con condiciones comparables a las propuesta en el trabajo antes citado, con la finalidad de comparar los resultados.
+En el siguiente informe se muestra una reproducción del trabajo "Life cycle analysis of pavement overlays made with Engineered Cementitious Composites", publicado en el año 2013, por Qian, Li, Zhang, Keoleian,  donde analizan la la vida util de la rehabilitación de caminos de hormigón con asfalto.
+
+En ese trabajo, se estudio el uso de hormigón dúctil para suprimir esta fractura frágil en la base de la capa superior debido a la grieta/junta existente en la sub-base. Por lo tanto, se puede esperar una mejora del rendimiento a largo plazo de los pavimentos. Se presento y estudio la viabilidad de este concepto a través de la integración del comportamiento de la fatiga por flexión y el análisis por elementos finitos para el pavimento revestido.
+
+En en la figura \ref{fig:modelo} se muestra el mallado y las condiciones de carga de la probeta (\ref{fig:modelo_carga}),y un crokis del modelo (\ref{fig:modelo_crokis}); en el mismo se observa que se empotra una de las bases (Superficie inferior del Volumen 4) y se tracciona desde el otra base.
 
 \begin{figure}[h]
 	\centering
-	\includegraphics[width=0.7\textwidth]{img/modelo.png}
-	\caption{Probeta a ensayar}
-	\label{fig:modelo}
+	\subfigure[Mallado y condiciones de borde]{\label{fig:modelo_carga} \includegraphics[width=0.4\textwidth]{img/modelo_condiciones}}
+	\subfigure[crokis simplificado del modelo]{\label{fig:modelo_crokis} \includegraphics[width=0.4\textwidth]{img/modelo_crokis.png}}
+	\caption{Modelo} \label{fig:modelo}
 \end{figure}
 
-En una intecion de optimisar el comportamiento, se propone adherir entre capas, un geotextil que funciones como elemento que tome las tracciones en lugar del asfalto.
+Se ensallaran dos situaciones:
 
-\section{Formulacion variacional}
-Las ecuaciones que gobiernan las deformaciones elásticas pequeñas de un cuerpo “$\Omega$” pueden ser escritas como se muestra en la expresion \ref{equ:defelas}:
+\begin{itemize}
+	\item[Simualcion 1:] para la primera prueba, se ensaya un material homogeneo, es decir, todos los volumenes del van a contener las mismas propiedades, imitando el ensayo original, donde era una probeta de hormigon solamente. 
+	\item[Simualcion 2:] como segundo ensallo, y como propuesta nuestra, se realizara el modelo utilizando un material con distinta elasticidad como intercapa (Figura \ref{fig:modelo_crokis}: volumen 2), el cual podria ser un tipo de geo-textil, el cual buscara reducir las tenciones de traccion en el hormigon del volumen 1, de esta forma evitar la fisuracion y aumentar su vida util.
+	
+	Se propone a este ultimo 2 alternativas, un material mas rigido y uno mas elastico
+\end{itemize}
+
+Por falta de mayor presision en la informacion, se utilizara valores medios, propuestos por los reglamentaciones vigentes
+
+\section{Formulación variacional}
+Las ecuaciones que gobiernan las deformaciones elásticas pequeñas de un cuerpo pueden ser escritas como se muestra en la expresión \ref{equ:defelas}:
+
 
 \begin{subequations}
 	\begin{equation}
@@ -67,13 +77,13 @@ Donde:
 	\item $\sigma$: es el tensor de tensiones
 	\item $f$: es la fuerza de cuerpo por unidad de volumen.
 	\item $\lambda y \mu]$: son los parámetros de elasticidad de Lamé del material en $\Omega$.
-	\item $I$: es el tensor indentidad.
+	\item $I$: es el tensor identidad.
 	\item $tr$: es el operador traza de un tensor
 	\item $\epsilon$: es el tensor de deformación unitaria simétrico (gradiente simétrico)
 	\item $u$: es el campo vectorial de desplazamientos. 
 \end{itemize}
 
-Cuando hablamos de una integracion en el tiempo, ya que este modelo es un ensayo elastodinamico, en lugar de usar la expresion \ref{equ:defelas-a}, se usa la \ref{equ:momenolineal}, donde se plantea el equilibrio del momento lineal.
+Cuando hablamos de una integración en el tiempo, ya que este modelo es un ensayo elasto-dinámico, en lugar de usar la expresión \ref{equ:defelas-a}, se usa la \ref{equ:momenolineal}, donde se plantea el equilibrio del momento lineal.
 
 \begin{equation}
 	\nabla \cdot \sigma+ \rho b = \rho \ddot{u}
@@ -81,6 +91,15 @@ Cuando hablamos de una integracion en el tiempo, ya que este modelo es un ensayo
 \end{equation}
 
 En donde $u$ es el campo vectorial de desplazamiento, $\ddot{u}$ es la aceleración, $\rho$ la densidad del material, $b$ una fuerza en la masa.
+
+Si combinamos \ref{equ:defelas-b} y \ref{equ:defelas-c}, se obtiene:
+
+\begin{equation}
+	\sigma = \lambda (\nabla \cdot u)I + \mu(\nabla u+(\nabla u)^t)
+	\label{equ:momenolineal}
+\end{equation}
+
+Las ecuaciones \ref{equ:defelas} pueden ser fácilmente transformadas en un único vector de EPD para $u$, el cual es la PDE para el $u$ desconocido (Ecuación de Navier). Sin embargo, en la derivación de la formulación variacional, es conveniente mantener las ecuaciones separadas.
 
 La forma débil se obtiene fácilmente integrando por partes la ecuación de equilibrio mediante una función de prueba $v \in V$ siendo $V$ un espacio de función adecuado que satisface las condiciones límite de desplazamiento:
 
@@ -93,9 +112,9 @@ Se pueden introducir términos disipativos a nivel de la ecuación constitutiva 
 
 Cuando se sabe poco sobre el origen de la amortiguación en la estructura, una elección popular para la matriz de amortiguación, conocida como amortiguación de Rayleigh, consiste en utilizar una combinación lineal de la matriz de masa y rigidez $[C]= \nu_M [M]+ \nu_K [K]$ con dos parámetros positivos $\nu_M$ $\nu_K$ que se pueden ajustar a las medidas experimentales.
 
-\subsection{Discretizacion del Tiempo}
+\subsection{Discretización del Tiempo}
 
-Ahora introducimos una discretización de tiempo del estudio del intervalo $[0;T]$ en incrementos de tiempo $N+1$ $t_0=0,t_1,...,t_N,t_{N+1}=T$ con $\Delta t=\frac{T}{N}$ que denota el paso de tiempo (supuesto constante). La resolución hará uso del método generalizado-$\alpha$ que puede ser visto como una extensión del ampliamente utilizado método de Newmark-$\beta$. Como método implícito, es incondicionalmente estable para una elección adecuada de los coeficientes, de modo que se pueden utilizar pasos de tiempo bastante grandes. También ofrece una precisión de segundo orden.
+Ahora introducimos una discretizacion de tiempo del estudio del intervalo $[0;T]$ en incrementos de tiempo $N+1$ $t_0=0,t_1,...,t_N,t_{N+1}=T$ con $\Delta t=\frac{T}{N}$ que denota el paso de tiempo (supuesto constante). La resolución hará uso del método generalizado-$\alpha$ que puede ser visto como una extensión del ampliamente utilizado método de $Newmark-\beta$. Como método implícito, es incondicionalmente estable para una elección adecuada de los coeficientes, de modo que se pueden utilizar pasos de tiempo bastante grandes. También ofrece una precisión de segundo orden.
 
 El método consiste en resolver la ecuación de evolución dinámica en un tiempo intermedio entre $t_N$ y $t_{N+1}$, de la siguiente manera
 
@@ -114,36 +133,36 @@ Con las siguientes aproximaciones:
 
 Todo el codigo del proyecto se encuentra subido a GitHub: \url{https://github.com/driendro/fatiga_asfalto_fem}
 
-Se utilizo un script realizado con Python 3, en donde, con la libreria \textbf{pygmsh} definimos la geometría de la pieza en 3D, a través de una funcion, lo que nos permite, variar facilmente los parametros de la geometria de la probeta. Luego, utilizando el mashador de GMSH, obtenemos un mallado de la superficie y el volumen. Por ultimo, luego de convertir la masha a xml usando \textbf{dolfin-convert}, con el fin de que "FEniCS" pueda interpretar los nodos y etiquetas de los diferentes volumenes y superficies.
+Se utilizo un scripts realizado con Python 3, en donde, con la librería \textbf{pygmsh} definimos la geometría de la pieza en 3D, a través de una función, lo que nos permite, variar fácilmente los parámetros de la geometría de la probeta. Luego, utilizando el mallado de GMSH, obtenemos un mallado de la superficie y el volumen. Por ultimo, luego de convertir la malla a xml usando \textbf{dolfin-convert}, con el fin de que "FEniCS" pueda interpretar los nodos y etiquetas de los diferentes volúmenes y superficies.
 
 \subsubsection{Codigo}
 
-El script de Python consta de 2 archivos, el primero esta definida la funcion que diseña la geometria, usando pygmsh, el segundo es el script, que desarrolla el calculo en si.
+El scripts de Python consta de 2 archivos, el primero esta definida la función que diseña la geometría, usando pygmsh, el segundo es el scripts, que desarrolla el calculo en si.
 
 \paragraph{geometria.py} Este archivo se divide en las siguientes partes:
 
 \begin{enumerate}
-	\item Deficiones de la geometria de la probeta, tomadas de los parametros de la funcion
-	\item Puntos de que definen la geometria
-	\item Lineas, bordes, superficies y volumenes definidos.
-	\item definimos los valores fisicos del volumen y la superficie.
-	\item creamos la malla y el xml, con la informacion para FEniCS. 
+	\item Defecciones de la geometría de la probeta, tomadas de los parámetros de la función
+	\item Puntos de que definen la geometría
+	\item Lineas, bordes, superficies y volúmenes definidos.
+	\item definimos los valores físicos del volumen y la superficie.
+	\item creamos la malla y el xml, con la información para FEniCS. 
 \end{enumerate}
 
-Cabe aclarar que en la zona central, se dimensiona un sector al cual se le puede aumentar la densidad de puntos para un mejor detallado de la informacion.
+Cabe aclarar que en la zona central, se dimensiona un sector al cual se le puede aumentar la densidad de puntos para un mejor detallado de la información.
 
 \paragraph{calculo.py} Este archivo cuenta con la logica del procesamiento de la simulacion:
 
 \begin{enumerate}
-	\item Parametros dimensionales de la geometria (tamaños y espesores)
+	\item Parámetros dimensionales de la geometría (tamaños y espesores)
 	\item Compara para no regenerar la malla siempre.
-	\item Clases que definene las propiedades de los materiales para cada parte de la probeta
-	\item Parametros de Elasticidad y coeficiente de Poisson.
-	\item Clases que definenen las funciones de calculo, y por ultimo el calculo por EF. 
+	\item Clases que definen las propiedades de los materiales para cada parte de la probeta
+	\item Parámetros de Elasticidad y coeficiente de Poisson.
+	\item Clases que definen las funciones de calculo, y por ultimo el calculo por EF. 
 \end{enumerate}
 
 
-En el modelo geometrico, se definieron 4 volumenes (Figura \ref{fig:vol}) y 2 superficies (bordes) (Figura \ref{fig:bord}), las cuales tendran las condiciones de borde para la simulacion.
+En el modelo geométrico, se definieron 4 volúmenes (Figura \ref{fig:vol}) y 2 superficies (bordes) (Figura \ref{fig:bord}), las cuales tendrán las condiciones de borde para la simulación.
 
 \begin{figure}[h]
 	\centering
@@ -152,28 +171,10 @@ En el modelo geometrico, se definieron 4 volumenes (Figura \ref{fig:vol}) y 2 su
 	\caption{Modelo} \label{fig:modelo1}
 \end{figure}
 
-Las propiedades del los materiales se muestran en la tabla \ref{tab:mat1}:
 
-\begin{table}[]
-	\centering
-	\resizebox{0.7\textwidth}{!}{%
-	\begin{tabular}{|l|l|l|l|}
-	\hline
-	Volumen & Material & E {[}MPa{]} & $\nu$ \\ \hline
-	1		& Asfalto   &  1000 & 0,35 \\ \hline
-	2		& Geotextil & 10000 & 0,30 \\ \hline
-	3 y 4	& Hormigon  & 20000 & 0,20 \\ \hline
-	\end{tabular}%
-	}
-	\caption{Propiedades de los materiales}
-	\label{tab:mat1}
-\end{table}
+\subsection{Simulaciónes}
 
-\subsection{Simulacion 1}
-
-En la primera modelacion, se intento reproducir las consiciones del trabajo previamente realizado, por lo que, las propiedades del material son las del Hormigon.
-
-En lo referente a las condicones de borde, todas las superficies del modelo se encuentran libres, salvo las mostradas en la figura \ref{fig:bord}, en este caso, el borde de la derecha se encuentra sujeto ($desplazamiento=0$), y el de la izquierda es cargado con una fuerza equivalente al E del Hormigon (Expresion \ref{equ:fuerza_1}), hacia la derecha, separando las bases inferiores.
+Para todas las simulaciones las condiciones de borde se mantienen, todas las superficies del modelo se encuentran libres, salvo las mostradas en la figura \ref{fig:bord}, en este caso, el borde de la derecha se encuentra sujeto ($desplazamiento=0$), y el de la izquierda es cargado con una fuerza $P$ equivalente al $E$ ($P=E/20000$) del Hormigón (Expresión \ref{equ:fuerza_1}), hacia la derecha, separando las bases inferiores.
 
 \begin{equation}
 	\left\{\begin{matrix}
@@ -188,17 +189,82 @@ Donde:
 \begin{itemize}
 	\item T: Tiempo relativo del ensayo.
 	\item tc: Tiempo de corte.
-	\item pc: Valor de la fuerza maxima
+	\item pc: Valor de la fuerza máxima
 \end{itemize}
 
-Luego de correr la simulacion (Imagen \ref{fig:sim1}), se observa una consentracion de tensiones de tracciones, en el plano donde termina la endidura, y compresiones en la cara superior, respondiendo a una flexion. estos resultados se contrastan correctamente con los obtenidos en el trabajo original \ref{fig:real}, incluso ellos muestran como se fisura y se despega el bloque superior en un plano a la altura de la endidura.
+
+\subsubsection{Simulacion 1}
+
+Todo el material es Hormigon, con las siguientes propiedades
+
+\begin{equation*}
+	E=20000 MPa = 20000000 \frac{kn}{m^2}
+	\nu = 0.2
+	\rho = 24 \frac{kn}{m^3}
+\end{equation*}
+ 
+\begin{figure}[h]
+	\centering
+	\subfigure[Tensiones]{\label{fig:sim1-sig} \includegraphics[width=0.45\textwidth]{img/1/sigma.png}}
+	\subfigure[Tension y Deformacion]{\label{fig:sim1-def} \includegraphics[width=0.45\textwidth]{img/1/def-sig}}
+	\caption{Simulación 1: Todo Hormigon}
+\end{figure}
+
+\subsubsection{Simulacion 2-a}
+
+Las propiedades de los volumenes 1, 3 y 4, se mantinene a la de la simulacion anterior, solo se pone en el volumen 2 un material mas rigido.
+
+Para el los volumenes 1,3 y 4
+\begin{equation*}
+	E=20000 MPa = 20000000 \frac{kn}{m^2}
+	\nu = 0.2
+	\rho = 24 \frac{kn}{m^3}
+\end{equation*}
+
+Para el volumen 2
+\begin{equation*}
+	E=10000 MPa = 10000000 \frac{kn}{m^2}
+	\nu = 0.2
+	\rho = 10 \frac{kn}{m^3}
+\end{equation*}
 
 \begin{figure}[h]
 	\centering
-	\subfigure[t=$10$; T=$20$; Pc=$\frac{E}{2000}$]{\label{fig:sim1} \includegraphics[width=0.45\textwidth]{img/1/tensiones.png}}
-	\subfigure[Foto del trabajo original]{\label{fig:real} \includegraphics[width=0.45\textwidth]{img/1/ensayo.png}}
-	\caption{Simulacion 1}
+	\subfigure[Tensiones]{\label{fig:sim2-sig} \includegraphics[width=0.45\textwidth]{img/2/sigma.png}}
+	\subfigure[Tension y Deformacion]{\label{fig:sim2-def} \includegraphics[width=0.45\textwidth]{img/2/def-sig}}
+	\caption{Simulación 2-a: Intercapa rigida}
 \end{figure}
 
+\subsection{Simulación 2-b}
+
+Las propiedades de los volumenes 1, 3 y 4, se mantinene a la de la simulacion anterior, solo se pone en el volumen 2 un material mas elastico.
+
+Para el los volumenes 1,3 y 4
+\begin{equation*}
+	E=20000 MPa = 20000000 \frac{kn}{m^2}
+	\nu = 0.2
+	\rho = 24 \frac{kn}{m^3}
+\end{equation*}
+
+Para el volumen 2
+\begin{equation*}
+	E=40000 MPa = 40000000 \frac{kn}{m^2}
+	\nu = 0.2
+	\rho = 10 \frac{kn}{m^3}
+\end{equation*}
+
+\begin{figure}[h]
+	\centering
+	\subfigure[Tensiones]{\label{fig:sim3-sig} \includegraphics[width=0.45\textwidth]{img/3/sigma.png}}
+	\subfigure[Tension y Deformacion]{\label{fig:sim3-def} \includegraphics[width=0.45\textwidth]{img/3/def-sig}}
+	\caption{Simulación 2-b: Intercapa elastica}
+\end{figure}
+
+\subsection{Conclusiones}
+
+
+Comparando los resultados arrojados por las simulaciones, en los tres casos, existe una elevada concentracion de tensiones en el area central, sobre todo cerca de la ranura.
+
+Al intercalar un material con distinta elasticidad se observan mejoras en el comportamiento, desarrollandose menores valore menores de tension, especialmente utilizando un material mas elastico donde la reduccion es de casi la mitad
 
 \end{document}

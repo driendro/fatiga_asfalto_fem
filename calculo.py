@@ -7,18 +7,20 @@ import numpy as np
 import os
 import matplotlib.pyplot as plt
 
+# Para forzar la regeneracion de la malla
+forzar=True
+
 # Dimensiones en cm
 l, h_prob, b = 30.0, 5.0, 10.0		# largo, alto, ancho del asfalto
 e_geo = 0.4 						# Espesor del geosintetico
 h_base = 2.0  						# alto base de hormigon
 e = 0.5 							# espesor de la ranura
-d = 0.2 							# ancho de la zonad de detalle
+d = 0.5 							# ancho de la zonad de detalle
 
 resmax=0.6							# tamaño de los elementos de los extremos
 resmin=0.3							# tamaño de los elementos del centro
 
-archivo = 'calc/simualcion1/modelo'		# PATH/AL/ARCHIVO
-archivovtu = archivo + '/vtu/modelo'		# PATH/A/LOS/ARCHIVOS/VTU
+archivo = 'calc/simualcion3/modelo'	# PATH/AL/ARCHIVO
 
 # No tocar esta lista
 parametros=[l, h_prob, b, e_geo, h_base, e, d, resmax, resmin, archivo]
@@ -31,6 +33,11 @@ geometria=False
 # Guardamos los parametros del mallado en un archivo llamado "parametros"
 # pero antes de guardar los nuevos parametros, copiamos el archivo original
 # y lo guardamos como parametros.old
+if forzar==True:
+	a = open('calc/parametros', 'w')
+	s = []
+	a.write(str(s))
+	a.close()
 s= 'cp calc/parametros calc/parametros.old'
 os.system(s)
 a = open('calc/parametros', 'w')
@@ -124,7 +131,7 @@ class Rho(fnc.UserExpression):
 		# Geosintetico
 		elif self.subdominio[cell.index] == 5:
 			values[0]=self.rho[1]
-		# Asafaltos
+		# Asafaltosp
 		else:
 			values[0]=self.rho[2]
 
@@ -134,11 +141,11 @@ Nsteps = 20
 dt     = fnc.Constant(T/Nsteps)
 
 # Carga aplicada
-p0 = 10. # kilos de MPa
+p0 = 1. # kilos de MPa
 cutoff_Tc = T/2
-p = fnc.Expression(("t <= tc ? -p0*t/tc : -p0", "0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
+p = fnc.Expression(("t <= tc ? p0*t/tc : p0","0", "0"), t=0, tc=cutoff_Tc, p0=p0, degree=0)
 
-#p = fnc.Expression(("p0*(sin(t))", "0", "0"), t=0, p0=p0, degree=0)
+#p = fnc.Expression(("p0*(sin(t)*sin(t))", "0", "0"), t=0, p0=p0, degree=0)
 
 #(sin(tc))*(sin(tc))
 
@@ -146,15 +153,15 @@ p = fnc.Expression(("t <= tc ? -p0*t/tc : -p0", "0", "0"), t=0, tc=cutoff_Tc, p0
 # Homigon
 E_h = 20.0
 nu_h = 0.2
-rho_h = 0.0
+rho_h = 2.4
 # Geosintetico
 E_g= 40.0 
-nu_g = 0.4
-rho_g = 0.0
+nu_g = 0.2
+rho_g = 1.0
 # Asfalto
 E_a= 20.0 #MPa
 nu_a = 0.2
-rho_a = 0.0
+rho_a = 2.4
 
 # metemos todo en listas
 listE	=[E_h,		E_g,	E_a]
@@ -206,9 +213,9 @@ fnc.dx=fnc.dx(metadata={'quadrature_degree': 3})
 #Condición de borde del costado izquierdo
 zero = fnc.Constant((0.0, 0.0, 0.0))
 bc = fnc.DirichletBC(V, zero, bordes, 1)
-#bc2 = fnc.DirichletBC(V, zero, bordes, 9)
+#bc2 = fnc.DirichletBC(V, zero, bordes, 2)
 #bc3 = fnc.DirichletBC(V, zero, bordes, 10)
-#bc  = [bc1, bc1, bc1]
+#bc  = [bc1, bc2]
 
 def eps(v):
     return fnc.sym(fnc.grad(v))

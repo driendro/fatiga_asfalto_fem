@@ -270,6 +270,7 @@ def probeta(x, malla=False, geometria=False, *args, **kwargs):
 	# Superficies Fisicas
 	geo.add_physical(s01, label=1)
 	geo.add_physical(s02, label=2)
+	#geo.add_physical(s32, label=7)
 	# Volumenes Fisicos
 	geo.add_physical(vbhm, label=3)
 	geo.add_physical(vbhf, label=4)
