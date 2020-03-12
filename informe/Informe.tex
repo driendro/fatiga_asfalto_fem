@@ -44,13 +44,13 @@ En en la figura \ref{fig:modelo} se muestra el mallado y las condiciones de carg
 Se ensallaran dos situaciones:
 
 \begin{itemize}
-	\item[Simualcion 1:] para la primera prueba, se ensaya un material homogeneo, es decir, todos los volumenes del van a contener las mismas propiedades, imitando el ensayo original, donde era una probeta de hormigon solamente. 
-	\item[Simualcion 2:] como segundo ensallo, y como propuesta nuestra, se realizara el modelo utilizando un material con distinta elasticidad como intercapa (Figura \ref{fig:modelo_crokis}: volumen 2), el cual podria ser un tipo de geo-textil, el cual buscara reducir las tenciones de traccion en el hormigon del volumen 1, de esta forma evitar la fisuracion y aumentar su vida util.
+	\item[Simualcion 1:] para la primera prueba, se ensaya un material homogéneo, es decir, todos los volúmenes del van a contener las mismas propiedades, imitando el ensayo original, donde era una probeta de hormigón solamente. 
+	\item[Simualcion 2:] como segundo ensayo, y como propuesta nuestra, se realizara el modelo utilizando un material con distinta elasticidad como intercapa (Figura \ref{fig:modelo_crokis}: volumen 2), el cual podría ser un tipo de geo-textil, el cual buscara reducir las tensiones de tracción en el hormigón del volumen 1, de esta forma evitar la fisuración y aumentar su vida util.
 	
-	Se propone a este ultimo 2 alternativas, un material mas rigido y uno mas elastico
+	Se propone a este ultimo 2 alternativas, un material mas rígido y uno mas elástico
 \end{itemize}
 
-Por falta de mayor presision en la informacion, se utilizara valores medios, propuestos por los reglamentaciones vigentes
+Por falta de mayor precision en la información, se utilizara valores medios, propuestos por los reglamentaciones vigentes
 
 \section{Formulación variacional}
 Las ecuaciones que gobiernan las deformaciones elásticas pequeñas de un cuerpo pueden ser escritas como se muestra en la expresión \ref{equ:defelas}:
@@ -151,7 +151,7 @@ El scripts de Python consta de 2 archivos, el primero esta definida la función 
 
 Cabe aclarar que en la zona central, se dimensiona un sector al cual se le puede aumentar la densidad de puntos para un mejor detallado de la información.
 
-\paragraph{calculo.py} Este archivo cuenta con la logica del procesamiento de la simulacion:
+\paragraph{calculo.py} Este archivo cuenta con la lógica del procesamiento de la simulación:
 
 \begin{enumerate}
 	\item Parámetros dimensionales de la geometría (tamaños y espesores)
@@ -195,11 +195,11 @@ Donde:
 
 \subsubsection{Simulacion 1}
 
-Todo el material es Hormigon, con las siguientes propiedades
+Todo el material es Hormigón, con las siguientes propiedades
 
 \begin{equation*}
-	E=20000 MPa = 20000000 \frac{kn}{m^2}
-	\nu = 0.2
+	E=20000 MPa = 20000000 \frac{kn}{m^2} \\
+	\nu = 0.2 \\
 	\rho = 24 \frac{kn}{m^3}
 \end{equation*}
  
@@ -207,24 +207,24 @@ Todo el material es Hormigon, con las siguientes propiedades
 	\centering
 	\subfigure[Tensiones]{\label{fig:sim1-sig} \includegraphics[width=0.45\textwidth]{img/1/sigma.png}}
 	\subfigure[Tension y Deformacion]{\label{fig:sim1-def} \includegraphics[width=0.45\textwidth]{img/1/def-sig}}
-	\caption{Simulación 1: Todo Hormigon}
+	\caption{Simulación 1: Todo Hormigón}
 \end{figure}
 
 \subsubsection{Simulacion 2-a}
 
-Las propiedades de los volumenes 1, 3 y 4, se mantinene a la de la simulacion anterior, solo se pone en el volumen 2 un material mas rigido.
+Las propiedades de los volúmenes 1, 3 y 4, se mantienen a la de la simulación anterior, solo se pone en el volumen 2 un material mas rígido.
 
-Para el los volumenes 1,3 y 4
+Para el los volúmenes 1,3 y 4
 \begin{equation*}
-	E=20000 MPa = 20000000 \frac{kn}{m^2}
-	\nu = 0.2
+	E=20000 MPa = 20000000 \frac{kn}{m^2} \\
+	\nu = 0.2 \\
 	\rho = 24 \frac{kn}{m^3}
 \end{equation*}
 
 Para el volumen 2
 \begin{equation*}
-	E=10000 MPa = 10000000 \frac{kn}{m^2}
-	\nu = 0.2
+	E=10000 MPa = 10000000 \frac{kn}{m^2} \\
+	\nu = 0.2 \\
 	\rho = 10 \frac{kn}{m^3}
 \end{equation*}
 
@@ -232,24 +232,24 @@ Para el volumen 2
 	\centering
 	\subfigure[Tensiones]{\label{fig:sim2-sig} \includegraphics[width=0.45\textwidth]{img/2/sigma.png}}
 	\subfigure[Tension y Deformacion]{\label{fig:sim2-def} \includegraphics[width=0.45\textwidth]{img/2/def-sig}}
-	\caption{Simulación 2-a: Intercapa rigida}
+	\caption{Simulación 2-a: Intercapa rígida}
 \end{figure}
 
 \subsection{Simulación 2-b}
 
-Las propiedades de los volumenes 1, 3 y 4, se mantinene a la de la simulacion anterior, solo se pone en el volumen 2 un material mas elastico.
+Las propiedades de los volúmenes 1, 3 y 4, se mantienen a la de la simulación anterior, solo se pone en el volumen 2 un material mas elástico.
 
-Para el los volumenes 1,3 y 4
+Para el los volúmenes 1,3 y 4
 \begin{equation*}
-	E=20000 MPa = 20000000 \frac{kn}{m^2}
-	\nu = 0.2
+	E=20000 MPa = 20000000 \frac{kn}{m^2} \\
+	\nu = 0.2 \\
 	\rho = 24 \frac{kn}{m^3}
 \end{equation*}
 
 Para el volumen 2
 \begin{equation*}
-	E=40000 MPa = 40000000 \frac{kn}{m^2}
-	\nu = 0.2
+	E=40000 MPa = 40000000 \frac{kn}{m^2} \\
+	\nu = 0.2 \\
 	\rho = 10 \frac{kn}{m^3}
 \end{equation*}
 
@@ -257,14 +257,30 @@ Para el volumen 2
 	\centering
 	\subfigure[Tensiones]{\label{fig:sim3-sig} \includegraphics[width=0.45\textwidth]{img/3/sigma.png}}
 	\subfigure[Tension y Deformacion]{\label{fig:sim3-def} \includegraphics[width=0.45\textwidth]{img/3/def-sig}}
-	\caption{Simulación 2-b: Intercapa elastica}
+	\caption{Simulación 2-b: Intercapa elástica}
 \end{figure}
 
 \subsection{Conclusiones}
 
 
-Comparando los resultados arrojados por las simulaciones, en los tres casos, existe una elevada concentracion de tensiones en el area central, sobre todo cerca de la ranura.
+Comparando los resultados arrojados por las simulaciones, en los tres casos, existe una elevada concentración de tensiones en el área central, sobre todo cerca de la ranura.
 
-Al intercalar un material con distinta elasticidad se observan mejoras en el comportamiento, desarrollandose menores valore menores de tension, especialmente utilizando un material mas elastico donde la reduccion es de casi la mitad
+Un resumen se muestra en la Tabla \ref{tab:resumen}.
+
+\begin{table}[h]
+	\resizebox{0.5\textwidth}{!}{%
+	\begin{tabular}{|c|c|c|}
+	\hline
+	Simulación & Sigma & Deformación \\ \hline
+	1 & 1,5 & 3,4 \\ \hline
+	2 & 9,7 & 3,6 \\ \hline
+	3 & 17 & 3,5 \\ \hline
+	\end{tabular}%
+	}
+	\caption[Resumen]{Valores de la tensión y la deformación en cada simulación}
+	\label{tab:resumen}
+\end{table}
+
+Al intercalar un material con distinta elasticidad se observan mejoras en el comportamiento, desarrollándose menores valore de tensión, en el hormigón, ya que la absorbe el material interno entre las capas.
 
 \end{document}
